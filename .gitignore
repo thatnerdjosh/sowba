@@ -1,0 +1,12 @@
+.coverage
+.eggs/
+.mypy_cache/
+.python-version
+.vscode
+coverage.xml
+lib/
+pyvenv.cfg
+report.xml
+venv
+**/*.egg-info*/
+**/__pycache__/
