@@ -1,26 +1,30 @@
-## Python dev
+## Developments
 
+
+### Clone repo
+```shell
+git clone https://github.com/oukone/sowba.git && cd sowba
+```
+
+### Create virtual env
 ```shell
 python -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
 ```
 
-## Install RockDB
+### Install RockDB dependencies
 ```shell
-pip install Cython
 sudo apt install build-essential libsnappy-dev \
                 zlib1g-dev libbz2-dev libgflags-dev \
                 librocksdb-dev liblz4-1 liblz4-dev
-pip install python-rocksdb
 ```
 
-## Install sowba
+### Install sowba
 ```shell
 pip install -e .
 ```
 
-## Run
+### Run
 ```shell
 uvicorn main:app --reload
 ```
