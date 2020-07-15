@@ -15,7 +15,7 @@ from fastapi_permissions import (
 )
 
 from passlib.context import CryptContext
-from app.security.model import User, UserInDB, USER_DB
+from src.security.model import User, UserInDB, USER_DB
 
 
 # to get a string like this run:

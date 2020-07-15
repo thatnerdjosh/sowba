@@ -1,5 +1,5 @@
-from app.storage.memory import MemoryDB
-from app.storage.rocksdb import RocksDBConnector
+from src.storage.memory import MemoryDB
+from src.storage.rocksdb import RocksDBConnector
 
 
 DB_CONNECTORS = {

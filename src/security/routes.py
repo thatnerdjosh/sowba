@@ -4,7 +4,7 @@ from datetime import timedelta
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 
-from app.security.model import (
+from src.security.model import (
     Token,
     User,
     UserSignup,
@@ -17,7 +17,7 @@ from app.security.model import (
     USER_DB
 )
 
-from app.security.utils import (
+from src.security.utils import (
     create_access_token,
     authenticate_user,
     get_active_principals,
@@ -35,7 +35,7 @@ router = APIRouter()
 Permission = configure_permissions(get_active_principals)
 
 
-@router.get("/users/")
+@router.get("/users/", tags=["Security"])
 async def users(
     acl: UserListAcl = Permission("view", UserListAcl),
     current_user: User = Depends(get_current_user)
@@ -45,7 +45,7 @@ async def users(
     return USER_DB.get_all()
 
 
-@router.post("/users/@update_principals/{uid}")
+@router.post("/users/@update_principals/{uid}", tags=["Security"])
 async def update_principals(
     uid: str,
     principals: Updateprincipals,
@@ -57,6 +57,7 @@ async def update_principals(
     else:
         user = USER_DB.get(uid)
 
+    user = user["item"]
     for action in principals.fields:
         principals_validator(vars(principals)[action])
         if action == "add":
@@ -75,7 +76,7 @@ async def update_principals(
     return response
 
 
-@router.post("/token", response_model=Token)
+@router.post("/token", response_model=Token, tags=["Security"])
 async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
 ):
@@ -93,12 +94,12 @@ async def login_for_access_token(
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@router.get("/users/@me", response_model=User)
+@router.get("/users/@me", response_model=User, tags=["Security"])
 async def me(current_user: User = Depends(get_current_user)):
     return current_user
 
 
-@router.post("/users/@update_passwd")
+@router.post("/users/@update_passwd", tags=["Security"])
 async def update_passwd(
     password: UpdatePasswd,
     current_user: User = Depends(get_current_user)
@@ -106,7 +107,7 @@ async def update_passwd(
     return password
 
 
-@router.post("/users/@update_user")
+@router.post("/users/@update_user", tags=["Security"])
 async def update_user(
     data: UserData,
     current_user: User = Depends(get_current_user)
@@ -114,7 +115,7 @@ async def update_user(
     return data
 
 
-@router.post("/users/@signup")
+@router.post("/users/@signup", tags=["Security"])
 async def signup(new_user: UserSignup):
     if new_user.password != new_user.confirm_password:
         raise HTTPException(

@@ -1,5 +1,5 @@
 import uuid
-from app.storage import DBConnector
+from src.storage import DBConnector
 from fastapi.exceptions import HTTPException
 
 

@@ -1,1 +1,1 @@
-from app.security.routes import router
+from src.security.routes import router

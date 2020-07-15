@@ -1,20 +1,14 @@
 from typing import List
 from datetime import datetime
 from contextvars import ContextVar
-from app.storage.utils import init_db, get_db
-from pydantic import BaseModel, Field, SecretStr ,EmailStr, validator
-from .acl import default_resource_acl
+from src.storage.utils import init_db, get_db
+from pydantic import (
+    BaseModel,
+    Field,
+    SecretStr,
+    EmailStr
+)
 from fastapi_permissions import Allow
-
-
-class BaseObj(BaseModel):
-    _owner: str = None
-
-    @property
-    def owner(self):
-        return self._owner
-
-    __acl__ = default_resource_acl
 
 
 class UserPrincipals(BaseModel):
@@ -70,7 +64,6 @@ class UserListAcl:
 
 class UserprincipalsAcl:
     __acl__ = [(Allow, 'role:admin', "update")]
-
 
 
 db_context = init_db(

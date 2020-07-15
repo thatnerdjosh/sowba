@@ -31,6 +31,8 @@ setup(
     packages=find_packages("src", exclude=["integration_tests", "tests"]),
     package_dir={"": "src"},
     install_requires=[r for r in read_requierments("requirements.txt")],
-    extras_require={"test": [r for r in read_requierments("test-requirements.txt")]},
-    entry_points={"console_scripts": ["sws = core.commands:command_runner"]},
+    # extras_require={
+    #     "test": [r for r in read_requierments("test-requirements.txt")]
+    # },
+    # entry_points={"console_scripts": ["sowba = core.commands:command_runner"]},
 )

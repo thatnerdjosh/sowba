@@ -1,7 +1,6 @@
 from fastapi import FastAPI
-from app import security
-from app.resources import lodges
-# from app.resources import members
+from src import security
+from src.resources import items
 
 
 app = FastAPI()
@@ -11,13 +10,7 @@ app.include_router(
 )
 
 app.include_router(
-    lodges.router,
-    prefix=lodges.PATH_PREFIX,
+    items.router,
+    prefix=items.PATH_PREFIX,
     responses={404: {"description": "Not found"}},
 )
-
-# app.include_router(
-#     members.router,
-#     prefix=members.PATH_PREFIX,
-#     responses={404: {"description": "Not found"}},
-# )

@@ -2,8 +2,9 @@ import gc
 import uuid
 import json
 import rocksdb
-from app.storage import DBConnector
+from src.storage import DBConnector
 from fastapi.exceptions import HTTPException
+from fastapi.encoders import jsonable_encoder
 
 
 
@@ -81,11 +82,13 @@ class RocksDBConnector(DBConnector):
     def update(self, oid, obj):
         self.db.merge(
             oid.encode("utf-8"),
-            json.dumps(obj.dict(exclude_unset=True)).encode("utf-8")
+            json.dumps(
+                jsonable_encoder(obj.dict(exclude_unset=True))
+            ).encode("utf-8")
         )
         return {
             "id": oid,
-            "item": obj
+            "item": obj.dict(exclude_unset=True)
         }
 
     def delete(self, oid):
@@ -93,6 +96,7 @@ class RocksDBConnector(DBConnector):
             self.db.delete(oid.encode("utf-8"))
         except Exception:
             raise HTTPException(status_code=404)
+        return {"deleted": True}
 
     def get_all(self):
         iter_item = self.db.iteritems()
