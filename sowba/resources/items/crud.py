@@ -1,7 +1,7 @@
-from src.core import api
+from sowba.core import api
 from fastapi import APIRouter
 from contextvars import ContextVar
-from src.resources.items.model import (
+from sowba.resources.items.model import (
     BaseItem, ItemType
 )
 

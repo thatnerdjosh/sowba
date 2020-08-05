@@ -2,13 +2,13 @@ import asyncio
 from fastapi import Depends
 from functools import wraps
 from pydantic import create_model
-from src.storage.memory import MemoryDB
-from src.storage.rocksdb import RocksDBConnector
+from sowba.storage.memory import MemoryDB
+from sowba.storage.rocksdb import RocksDBConnector
 
-from src.security.acl import default_acl_policy
-from src.security.model import User
-from src.security.routes import Permission
-from src.security.utils import get_current_user
+from sowba.security.acl import default_acl_policy
+from sowba.security.model import User
+from sowba.security.routes import Permission
+from sowba.security.utils import get_current_user
 
 
 def create_in_db_model(model):

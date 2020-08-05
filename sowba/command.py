@@ -1,8 +1,8 @@
 import logging
 import argparse
-from core.cli.consumer import consumer_action
-from core.cli.service import service_action
-from core.cli.producer import produser_action
+from sowba.core.cli.consumer import consumer_action
+from sowba.core.cli.service import service_action
+from sowba.core.cli.producer import produser_action
 
 logger = logging.getLogger(__name__)
 

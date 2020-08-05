@@ -4,7 +4,7 @@ from datetime import timedelta
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 
-from src.security.model import (
+from sowba.security.model import (
     Token,
     User,
     UserSignup,
@@ -17,7 +17,7 @@ from src.security.model import (
     USER_DB
 )
 
-from src.security.utils import (
+from sowba.security.utils import (
     create_access_token,
     authenticate_user,
     get_active_principals,
@@ -125,9 +125,14 @@ async def signup(new_user: UserSignup):
     new_user = UserInDB(
         **{
             **new_user.dict(),
-            "hashed_password": pwd_context.hash(new_user.password.get_secret_value())
+            "hashed_password": pwd_context.hash(
+                new_user.password.get_secret_value()
+            )
         }
     )
+    new_user.principals = [
+        *{*new_user.principals, f"user:{new_user.email}", "role:user"}
+    ]
     response = USER_DB.store(oid=new_user.email, obj=new_user)
     response["item"] = User(**new_user.dict())
     return response

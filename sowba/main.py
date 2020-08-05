@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from src import security
-from src.resources import items
+from sowba import security
+from sowba.resources import items
 
 
 app = FastAPI()
@@ -14,3 +14,8 @@ app.include_router(
     prefix=items.PATH_PREFIX,
     responses={404: {"description": "Not found"}},
 )
+
+
+
+# sowba service start --all
+# sowba service start service-name service-name

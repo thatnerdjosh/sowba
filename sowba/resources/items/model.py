@@ -1,7 +1,7 @@
 from enum import Enum
 from datetime import datetime
 from pydantic import BaseModel, Field
-from src.security.acl import BaseResource
+from sowba.security.acl import BaseResource
 
 
 class ItemType(str, Enum):

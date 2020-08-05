@@ -2,7 +2,7 @@ import gc
 import uuid
 import json
 import rocksdb
-from src.storage import DBConnector
+from sowba.storage import DBConnector
 from fastapi.exceptions import HTTPException
 from fastapi.encoders import jsonable_encoder
 

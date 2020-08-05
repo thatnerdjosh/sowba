@@ -1,4 +1,4 @@
-from src.resources.items.crud import router, db_context
+from sowba.resources.items.crud import router, db_context
 
 SERVICE_PATH_PREFIX = "/api"
 SERVICE_TAGS = ["Items Service"]

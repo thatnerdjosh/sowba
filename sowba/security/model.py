@@ -1,7 +1,7 @@
 from typing import List
 from datetime import datetime
 from contextvars import ContextVar
-from src.storage.utils import init_db, get_db
+from sowba.storage.utils import init_db, get_db
 from pydantic import (
     BaseModel,
     Field,
@@ -12,7 +12,7 @@ from fastapi_permissions import Allow
 
 
 class UserPrincipals(BaseModel):
-    principals: List[str] = []
+    principals: List[str] = ["role:user"]
 
 
 class Updateprincipals(BaseModel):
