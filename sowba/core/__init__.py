@@ -1,9 +1,12 @@
 import asyncio
 from fastapi import Depends
+from fastapi import FastAPI
 from functools import wraps
 from pydantic import create_model
+from sowba.core.const import DEFAULT_CORS
 from sowba.storage.memory import MemoryDB
 from sowba.storage.rocksdb import RocksDBConnector
+from starlette.middleware.cors import CORSMiddleware
 
 from sowba.security.acl import default_acl_policy
 from sowba.security.model import User
@@ -125,3 +128,20 @@ class api:
             return cls(*args, **kwargs)
 
         return inner
+
+
+class Application(FastAPI):
+
+    settings = elastic = None
+
+    def __init__(self, *args, **kwargs):
+        self.settings = kwargs.pop("settings", None)
+        super().__init__(*args, **kwargs)
+
+    def configure(self, settings):
+        self.settings = settings
+        cors = self.settings.get("cors", DEFAULT_CORS)
+        self.add_middleware(CORSMiddleware, **cors)
+
+    def setup_task_vars(self):
+        ...

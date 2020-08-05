@@ -35,7 +35,7 @@ router = APIRouter()
 Permission = configure_permissions(get_active_principals)
 
 
-@router.get("/users/", tags=["Security"])
+@router.get("/", tags=["Security"])
 async def users(
     acl: UserListAcl = Permission("view", UserListAcl),
     current_user: User = Depends(get_current_user)
@@ -45,7 +45,7 @@ async def users(
     return USER_DB.get_all()
 
 
-@router.post("/users/@update_principals/{uid}", tags=["Security"])
+@router.post("/@update_principals/{uid}", tags=["Security"])
 async def update_principals(
     uid: str,
     principals: Updateprincipals,
@@ -94,12 +94,12 @@ async def login_for_access_token(
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@router.get("/users/@me", response_model=User, tags=["Security"])
+@router.get("/@me", response_model=User, tags=["Security"])
 async def me(current_user: User = Depends(get_current_user)):
     return current_user
 
 
-@router.post("/users/@update_passwd", tags=["Security"])
+@router.post("/@update_passwd", tags=["Security"])
 async def update_passwd(
     password: UpdatePasswd,
     current_user: User = Depends(get_current_user)
@@ -107,7 +107,7 @@ async def update_passwd(
     return password
 
 
-@router.post("/users/@update_user", tags=["Security"])
+@router.post("/@update_user", tags=["Security"])
 async def update_user(
     data: UserData,
     current_user: User = Depends(get_current_user)
@@ -115,7 +115,7 @@ async def update_user(
     return data
 
 
-@router.post("/users/@signup", tags=["Security"])
+@router.post("/@signup", tags=["Security"])
 async def signup(new_user: UserSignup):
     if new_user.password != new_user.confirm_password:
         raise HTTPException(

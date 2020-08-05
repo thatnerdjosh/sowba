@@ -1,5 +1,6 @@
 import logging
 import argparse
+breakpoint()
 from sowba.core.cli.consumer import consumer_action
 from sowba.core.cli.service import service_action
 from sowba.core.cli.producer import produser_action

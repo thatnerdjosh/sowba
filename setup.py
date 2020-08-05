@@ -34,5 +34,5 @@ setup(
     # extras_require={
     #     "test": [r for r in read_requierments("test-requirements.txt")]
     # },
-    entry_points={"console_scripts": ["sowba = sowba.commands:cli_runner"]},
+    entry_points={"console_scripts": ["sowba-cli = commands:cli_runner"]},
 )
