@@ -4,5 +4,5 @@ from resources import items
 
 routers = [
     security,
-    items
+    items,
 ]

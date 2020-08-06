@@ -1,14 +1,19 @@
 import os
+import re
+import shutil
 import uvicorn
 import asyncio
 import uvloop
 import hypercorn.asyncio
 import hypercorn.config
 from sowba.core.settings import get_settings
-from sowba.core.const import core_directory, resources_directory
+from sowba.core.const import core_directory, resources_directory, cookiecutter_directory
 
 from sowba.core.utils import resolve_dotted_name
 from sowba.core.utils import run_app
+
+from cookiecutter.main import cookiecutter
+from cookiecutter.exceptions import OutputDirExistsException
 
 
 def hypercorn_factory(app, **settings):
@@ -21,6 +26,10 @@ def hypercorn_factory(app, **settings):
     return asyncio.run(hypercorn.asyncio.serve(app, config))
 
 
+def clean_name(name):
+    return re.sub('\W|^(?=\d)','_', name)
+
+
 def ls(**kwargs):
     services = filter(
         lambda c: c not in ['__init__.py', '__pycache__'],
@@ -31,11 +40,16 @@ def ls(**kwargs):
         service = resolve_dotted_name(f"sowba.resources.{service_name}")
         for route in service.router.routes:
             print(f"{route.methods} => {service_name}{route.path}\t{route.name}")
-    print("\n")
+        print("\n")
 
 
 def rm(**kwargs):
-    print(f"sowba service rm : {kwargs}")
+    component_name = clean_name(kwargs["component_name"])
+    try:
+        shutil.rmtree(f'{resources_directory}/{component_name}')
+    except OSError as e:
+        print("Error: %s - %s." % (component_name, e.strerror))
+
 
 
 def run(**kwargs):
@@ -61,7 +75,20 @@ def run(**kwargs):
 
 
 def add(**kwargs):
-    print(f"sowba service add : {kwargs}")
+    component_name = clean_name(kwargs["component_name"])
+    try:
+        r = cookiecutter(
+            f"{cookiecutter_directory}/resource",
+            output_dir=resources_directory,
+            no_input=True,
+            extra_context={
+                'resource_name': component_name,
+                'storage': kwargs["storage"]
+            }
+        )
+        print(r)
+    except OutputDirExistsException:
+        print(f"Error: Service {component_name} already exists")
 
 
 def service_action(action, **kwargs):

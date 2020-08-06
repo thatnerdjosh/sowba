@@ -1,0 +1,4 @@
+{
+    "resource_name": "{{ cookiecutter.resource_name }}",
+    "storage": "{{ cookiecutter.storage }}"
+}

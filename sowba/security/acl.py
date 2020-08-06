@@ -23,7 +23,7 @@ class AclPolicy:
     create: CreateItemAcl = None
 
 
-class BaseResource(BaseModel):
+class BaseResourceAcl(BaseModel):
 
     def __acl__(self):
         assert self.owner is not None, "Owner must be define."
