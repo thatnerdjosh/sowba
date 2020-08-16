@@ -1,0 +1,4 @@
+{
+    "app": "{{cookiecutter.app}}",
+    "storage": "{{cookiecutter.storage}}"
+}

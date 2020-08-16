@@ -1,0 +1,18 @@
+.vscode/
+
+# Python Stuff
+**/__pycache__
+*.egg-info
+.mypy_cache/
+.coverage
+.eggs/
+.mypy_cache/
+.python-version
+coverage.xml
+lib/
+pyvenv.cfg
+report.xml
+*.db
+venv
+**/*.egg-info*/
+**/__pycache__/

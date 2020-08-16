@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "compass"
+version = "0.1.0"
+description = ""
+authors = ["Developer <developer@sowba.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+
+[tool.poetry.dev-dependencies]
+
+
+[tool.poetry.scripts]
+sowba = 'compass.cli:app'
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

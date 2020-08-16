@@ -1,0 +1,84 @@
+{
+    "name": "{{ cookiecutter.project_name }}",
+    "admin_user": {
+        "username": "admin",
+        "email": "admin@sowba.com",
+        "password": "ENV_SOWBA_ADMIN_PASSWORD"
+    },
+    "services": [
+        {
+            "name": "users",
+            "settings": {
+                "storage": {},
+                "stream": {},
+                "redis": {}
+            }
+        },
+        {
+            "name": "items",
+            "settings": {}
+        },
+        {
+            "name": "{{ cookiecutter.project_name }}",
+            "settings": {}
+        }
+    ],
+    "settings": {
+        "storages": {
+            "default": "rocksdb",
+            "connectors": [
+                {
+                    "connector": "memory",
+                    "settings": {}
+                },
+                {
+                    "connector": "rockdb",
+                    "settings": {}
+                },
+                {
+                    "connector": "mongodb",
+                    "settings": {}
+                },
+                {
+                    "connector": "couchbase",
+                    "settings": {}
+                }
+            ]
+        },
+        "stream": {
+            "type": "kafka",
+            "settings": {
+                "bootstrap_servers": [
+                    "kafka1.sowba.io:9092",
+                    "kafka2.sowba.io:9092",
+                    "kafka3.sowba.io:9092"
+                ],
+                "consumer": {},
+                "producer": {}
+            }
+        },
+        "redis": {
+            "hosts": "keydb.sowba.io",
+            "port": 6379
+        }
+    },
+    "security": {
+        "secret_key": "ENV_SECRET_KEY",
+        "algorithm": "ENV_ALGORITHM",
+        "access_token_expire_minutes": "ENV_ACCESS_TOKEN_EXPIRE_MINUTES"
+    },
+    "asgi": {
+        "host": "0.0.0.0",
+        "port": 8000,
+        "debug": false,
+        "reload": false,
+        "timeout_keep_alive": 20,
+        "proxy_headers": true,
+        "log_level": "info"
+    },
+    "cors": {
+        "allow_origins": ["*"],
+        "allow_headers": ["*"],
+        "allow_methods": ["*"]
+    }
+}
