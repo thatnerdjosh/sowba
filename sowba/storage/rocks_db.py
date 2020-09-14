@@ -158,6 +158,12 @@ class RocksDBStorage(BaseStorage):
         del self.db
         gc.collect()
 
+    def start(self):
+        ...
+
+    def stop(self):
+        ...
+
     def store(self, obj=None):
         oid = str(obj.uid)
         self.db.put(oid.encode("utf-8"), self.serialize(obj, model=self.model))
@@ -241,7 +247,7 @@ if __name__ == "__main__":
     storage.settings()
     storage.setup()
     # do something
-    create_user()
+    # create_user()
     # print(storage.getall())
     # print(
     #     storage.getmany(
@@ -250,6 +256,8 @@ if __name__ == "__main__":
     #     )
     # )
     print(storage.count())
-    print(storage.getall())
-    print(list(storage.find("name", "e", opr="in")))
+    # print(storage.getall())
+    users = list(storage.find("age", 30, opr="gt"))
+    # breakpoint()
+    print(users)
     storage.close()

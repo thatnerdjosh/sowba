@@ -162,7 +162,9 @@ def permission_dependency_factory(
     return Depends(permission_dependency)
 
 
-def has_permission(user_principals: list, requested_permission: str, resource: Any):
+def has_permission(
+    user_principals: list, requested_permission: str, resource: Any
+):
     """ checks if a user has the permission for a resource
 
     The order of the function parameters can be remembered like "Joe eat apple"
@@ -199,7 +201,9 @@ def list_permissions(user_principals: list, resource: Any):
     as_iterables = ({p} if not is_like_list(p) else p for p in acl_permissions)
     permissions = set(itertools.chain.from_iterable(as_iterables))
 
-    return {str(p): has_permission(user_principals, p, acl) for p in permissions}
+    return {
+        str(p): has_permission(user_principals, p, acl) for p in permissions
+    }
 
 
 # utility functions

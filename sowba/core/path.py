@@ -25,7 +25,7 @@ class Template:
 
     @property
     def service(self) -> pathlib.Path:
-        return pathlib.Path(f"{cookiecutter()}/app")
+        return pathlib.Path(f"{cookiecutter()}/service")
 
 
 template = Template()

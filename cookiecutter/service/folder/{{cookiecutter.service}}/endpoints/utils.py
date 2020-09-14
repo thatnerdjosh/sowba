@@ -1,7 +1,7 @@
 from sowba.registry import get as get_registry
 
 
-router = get_registry.service("items")
+router = get_registry.service("{{cookiecutter.service}}")
 
 
 @router.get("/api/@ping")

@@ -1,73 +1,56 @@
 {
     "name": "compass",
-    "admin_user": {
-        "username": "admin",
-        "email": "admin@sowba.com"
-    },
-    "services": [{
-            "name": "users",
-            "status": "enable",
-            "model": "compass.services.users.model.User",
-            "settings": {
-                "storage": "rocksdb",
-                "consumer": null,
-                "producer": null
-            }
-        },
+    "services": [
         {
             "name": "items",
             "status": "enable",
-            "model": "compass.services.items.model.Items",
-            "settings": {
-                "storage": "rocksdb",
-                "consumer": null,
-                "producer": null
+            "storage": {
+                "model": "compass.services.items.model.Items",
+                "connector": "rocksdb"
+            }
+        },
+        {
+            "name": "member",
+            "status": "enable",
+            "storage": {
+                "model": "compass.services.member.model.Member",
+                "connector": "rocksdb"
             }
         }
     ],
-    "settings": {
-        "storages": {
-            "default": "rocksdb",
-            "connectors": [{
-                    "connector": "rocksdb",
-                    "connector_cls": "sowba.storage.rocks_db.RocksDBStorage",
-                    "configuration": {},
-                    "settings": {}
-                },
-                {
-                    "connector": "mongodb",
-                    "connector_cls": null,
-                    "configuration": {},
-                    "settings": {}
-                },
-                {
-                    "connector": "couchbase",
-                    "connector_cls": null,
-                    "configuration": {},
-                    "settings": {}
-                }
-            ]
-        },
-        "stream": {
-            "type": "kafka",
-            "settings": {
-                "bootstrap_servers": [
-                    "kafka1.sowba.io:9092",
-                    "kafka2.sowba.io:9092",
-                    "kafka3.sowba.io:9092"
-                ],
-                "consumer": {},
-                "producer": {}
+    "storages": {
+        "default": "rocksdb",
+        "connectors": [
+            {
+                "name": "rocksdb",
+                "factory": "sowba.storage.rocks_db.RocksDBStorage",
+                "configuration": {},
+                "settings": {}
+            },
+            {
+                "name": "mongodb",
+                "factory": null,
+                "configuration": {},
+                "settings": {}
+            },
+            {
+                "name": "couchbase",
+                "factory": null,
+                "configuration": {},
+                "settings": {}
             }
-        },
-        "redis": {
-            "dsn": "redis://keydb.sowba.io/0",
-            "settings": {}
-        }
+        ]
     },
-    "security": {
-        "algorithm": "HS256",
-        "access_token_expire_minutes": 30
+    "auth": {
+        "admin": {
+            "username": "admin",
+            "email": "admin@sowba.com"
+        },
+        "security": {
+            "algorithm": "HS256",
+            "access_token_expire_minutes": 30,
+            "auth_path": "/token"
+        }
     },
     "asgi": {
         "host": "0.0.0.0",

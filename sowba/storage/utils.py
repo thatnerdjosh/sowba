@@ -1,8 +1,8 @@
-from sowba.storage import StorageName
+from sowba.settings.model import StorageName
 from sowba.storage import BaseStorage
-from sowba.settings.app import AppSettings
+from sowba.settings.model import AppSettings
 from sowba.core.model import SBaseModel
-from sowba.settings.service import ServiceConf
+from sowba.settings.model import ServiceConf
 from sowba.settings.storage import ConnectorConf
 from sowba.settings.service import ServiceStatus
 from sowba.settings.storage import ConnectorConfig
@@ -18,15 +18,13 @@ def get_service_conf(name: str, settings: AppSettings) -> ServiceConf:
 def get_service_connector_name(
     service: ServiceConf, settings: AppSettings
 ) -> StorageName:
-    if service.settings:
-        return service.settings.storage
-    return settings.settings.storages.default
+    return service.storage.connector or settings.storages.default
 
 
 def get_app_connector_conf(
     connector: StorageName, settings: AppSettings
 ) -> ConnectorConf:
-    for conf in settings.settings.storages.connectors:
+    for conf in settings.storages.connectors:
         if conf.connector == connector:
             return conf
     return
@@ -60,11 +58,11 @@ def get_storage(
     assert (
         service.status == ServiceStatus.enable
     ), f"Service <{servicename}> must be enabled."
-    connector = connector or get_service_connector_name(service, settings)
-    connector_conf = get_app_connector_conf(connector, settings)
+    connector_name = connector or get_service_connector_name(service, settings)
+    connector_conf = get_app_connector_conf(connector_name, settings)
     assert connector_conf, f"No connector found for Service: <{servicename}>"
     return make_storage(
-        service.model,
+        service.storage.model,
         connector_conf.connector_cls,
         storage_configs=connector_conf.configuration,
         storage_settings=connector_conf.settings,

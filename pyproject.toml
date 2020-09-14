@@ -13,6 +13,8 @@ typer = {extras = ["all"], version = "^0.3.1"}
 email-validator = "^1.1.1"
 python-rocksdb = "^0.7.0"
 devtools = {extras = ["pygments"], version = "^0.6"}
+pyjwt = "^1.7.1"
+passlib = {extras = ["bcrypt"], version = "^1.7.2"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

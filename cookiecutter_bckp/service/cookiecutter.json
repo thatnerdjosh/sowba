@@ -1,3 +1,0 @@
-{
-    "resource_name": "{{ cookiecutter.project_name }}"
-}

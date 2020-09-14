@@ -8,28 +8,28 @@ sowba --admin-passwd=... --secret-key=...  config ls security
 sowba --admin-passwd=... --secret-key=...  config ls asgi
 sowba --admin-passwd=... --secret-key=...  config ls cors
 """
-import typer
-import devtools
 from enum import Enum
-from .vars import settings_var
+
+import devtools
+import typer
+from sowba.registry import get as get_registry
 
 app = typer.Typer()
 
 
 class LsValues(str, Enum):
     name: str = "name"
-    admin_user: str = "admin_user"
-    services: str = "services"
-    settings: str = "settings"
-    security: str = "security"
     asgi: str = "asgi"
     cors: str = "cors"
+    auth: str = "auth"
+    services: str = "services"
+    storages: str = "storages"
 
 
 @app.command()
 def ls(config_name: LsValues = typer.Argument(None)):
 
-    settings = settings_var.get()
+    settings = get_registry.app_settings()
 
     if config_name is None:
         devtools.debug(settings)

@@ -1,7 +1,7 @@
-from sowba.core.utils import get_service_router
+from sowba.registry import get as get_registry
 
 
-router = get_service_router("items")
+router = get_registry.service("items")
 
 
 @router.get("/api/@ping")

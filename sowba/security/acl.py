@@ -5,6 +5,7 @@ from collections import namedtuple
 
 from sowba.security import Allow
 from sowba.security import Authenticated
+from sowba.security import roles
 
 
 class Acl(namedtuple("Acl", ("access", "principal", "permission"))):
@@ -13,8 +14,8 @@ class Acl(namedtuple("Acl", ("access", "principal", "permission"))):
 
 class CreateItemAcl:
     __acl__ = [
-        Acl(Allow, "role:user", "create"),
-        Acl(Allow, "role:admin", "create"),
+        Acl(Allow, roles.user, "create"),
+        Acl(Allow, roles.admin, "create"),
     ]
 
 
@@ -32,12 +33,12 @@ class SBaseModelAcl(BaseModel):
             Exception("Owner must be define.")
 
         return [
-            Acl(Allow, "role:user", "create"),
-            Acl(Allow, "role:admin", "create"),
+            Acl(Allow, roles.user, "create"),
+            Acl(Allow, roles.admin, "create"),
             Acl(Allow, Authenticated, "view"),
-            Acl(Allow, "role:admin", "update"),
+            Acl(Allow, roles.admin, "update"),
             Acl(Allow, f"user:{self.owner}", "update"),
-            Acl(Allow, "role:admin", "delete"),
+            Acl(Allow, roles.admin, "delete"),
             Acl(Allow, f"user:{self.owner}", "delete"),
         ]
 

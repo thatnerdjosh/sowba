@@ -2,26 +2,32 @@
 export SOWBA_ENV_ADMIN_USER_PASSWORD="ChangeMe"
 export SOWBA_ENV_SECURITY_SECRET_KEY="$(openssl rand -hex 32)"
 
-sowba create [name] --storage=rocksdb
+sowba create [name] --storage=rocksdb --auth
 sowba run [name] --storage=rocksdb
 """
 import os
 import sys
+from pathlib import Path
+
 import typer
 import devtools
-from pathlib import Path
-from sowba.core import path
-from sowba.storage import StorageName
-
 from pydantic import ValidationError
-from sowba.settings.utils import load_settings
 
-from sowba.cli import config
-from sowba.cli import service
-from sowba.cli import plugin
-from sowba.cli.utils import create_app
-from sowba.cli.vars import settings_var
-from sowba.cli.vars import config_file_var
+from sowba.registry import get as get_registry
+from sowba.registry import add as add_registry
+from sowba.core import path
+from sowba.cli import config, service
+from sowba.settings.model import StorageName, ServiceStatus
+
+from sowba.cli.utils import (
+    create_app,
+    load_settings,
+    make_service_storage,
+    make_service,
+    make_app,
+    run_app,
+    load_service_endpoints,
+)
 
 
 sys.path.append(str(path.cwd()))
@@ -29,7 +35,6 @@ sys.path.append(str(path.cwd()))
 app = typer.Typer()
 app.add_typer(config.app, name="config")
 app.add_typer(service.app, name="service")
-app.add_typer(plugin.app, name="plugin")
 
 
 @app.callback()
@@ -54,24 +59,25 @@ def app_callback(
         os.environ["SOWBA_ENV_SECURITY_SECRET_KEY"] = secret_key
 
     try:
-        settings = load_settings(config_file)
-        settings_var.set(settings)
+        add_registry.app_settings(load_settings(config_file))
     except ValidationError as err:
         typer.echo(f"Error loading [{config_file}].")
         print(err)
         raise typer.Abort()
 
     typer.echo(f"Running project on: {config_file}")
-    config_file_var.set(config_file)
 
 
 @app.command()
 def create(
     name: str,
     output: Path = typer.Option(Path("./")),
-    storage: StorageName = typer.Option("rocksdb"),
-    template: str = typer.Option("default"),
+    storage: StorageName = typer.Option(StorageName.rocksdb),
+    auth: bool = typer.Option(False),
 ):
+    template = "default"
+    if auth:
+        template = "auth"
     try:
         create_app(name, output=output, storage=storage, template=template)
     except Exception as err:
@@ -84,10 +90,37 @@ def create(
 
 
 @app.command()
-def run(name: str, storage: StorageName = StorageName.rocksdb):
-    settings = settings_var.get()
+def run(storage: StorageName = typer.Option(None, "--settings-storage")):
+    settings = get_registry.app_settings()
+    typer.echo(f"app: {settings.name}")
     typer.echo(f"storage: {storage}")
+
+    if storage is not None:
+        for i, _ in enumerate(settings.services):
+            settings.services[i].storage.connector = storage
+
+    app = make_app(settings)
+    for srv in settings.services:
+        if srv.status == ServiceStatus.disable:
+            continue
+        storage = make_service_storage(srv.name, settings)
+        add_registry.storage(srv.name, storage)
+        router = make_service(srv.name, storage, settings)
+        add_registry.service(srv.name, router)
+        load_service_endpoints(srv.name, settings)
+        app.include_router(
+            router,
+            tags=[f"{settings.name}@{srv.name}"],
+            prefix=f"/{settings.name}/{srv.name}",
+            responses={
+                404: {
+                    "service": f"{settings.name}/{srv.name}",
+                    "error": "NOT_FOUND",
+                }
+            },
+        )
     devtools.debug(settings.asgi)
+    run_app(app, settings)
 
 
 if __name__ == "__main__":
