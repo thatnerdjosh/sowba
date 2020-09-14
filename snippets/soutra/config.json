@@ -1,0 +1,75 @@
+{
+    "name": "soutra",
+    "services": [
+        {
+            "name": "offeredservice",
+            "status": "enable",
+            "storage": {
+                "model": "soutra.services.offeredservice.model.Offeredservice",
+                "connector": "rocksdb"
+            }
+        },
+        {
+            "name": "selectedService",
+            "status": "enable",
+            "storage": {
+                "model": "soutra.services.selectedService.model.Selectedservice",
+                "connector": "rocksdb"
+            }
+        }
+    ],
+    "storages": {
+        "default": "rocksdb",
+        "connectors": [
+            {
+                "name": "rocksdb",
+                "factory": "sowba.storage.rocks_db.RocksDBStorage",
+                "configuration": {},
+                "settings": {}
+            },
+            {
+                "name": "mongodb",
+                "factory": null,
+                "configuration": {},
+                "settings": {}
+            },
+            {
+                "name": "couchbase",
+                "factory": null,
+                "configuration": {},
+                "settings": {}
+            }
+        ]
+    },
+    "auth": {
+        "admin": {
+            "username": "admin",
+            "email": "admin@sowba.com"
+        },
+        "security": {
+            "algorithm": "HS256",
+            "access_token_expire_minutes": 30,
+            "auth_path": "/token"
+        }
+    },
+    "asgi": {
+        "host": "0.0.0.0",
+        "port": 8000,
+        "debug": false,
+        "reload": false,
+        "timeout_keep_alive": 20,
+        "proxy_headers": true,
+        "log_level": "info"
+    },
+    "cors": {
+        "allow_origins": [
+            "*"
+        ],
+        "allow_headers": [
+            "*"
+        ],
+        "allow_methods": [
+            "*"
+        ]
+    }
+}
