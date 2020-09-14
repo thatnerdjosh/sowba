@@ -2,6 +2,7 @@
 
 ### Install RockDB dependencies
 ```shell
+https://github.com/facebook/rocksdb/wiki/Building-on-Windows
 sudo apt install build-essential libsnappy-dev \
                 zlib1g-dev libbz2-dev libgflags-dev \
                 librocksdb-dev liblz4-1 liblz4-dev
@@ -16,6 +17,7 @@ git clone https://github.com/oukone/sowba.git && cd sowba
 ```shell
 poetry install
 poetry shell
+```
 
 ### Run
 ```shell
