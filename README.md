@@ -3,10 +3,7 @@
 ### Install dependencies
 
 #### Poetry
-
-```shell
-sudo apt -y install python3-distutils python3-venv
-```
+See the installation docs at https://python-poetry.org/docs/#installation
 
 #### RocksDB
 
