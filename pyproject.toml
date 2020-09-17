@@ -16,6 +16,7 @@ devtools = {extras = ["pygments"], version = "^0.6"}
 pyjwt = "^1.7.1"
 passlib = {extras = ["bcrypt"], version = "^1.7.2"}
 fastapi_permissions = "^0.2.6"
+cookiecutter = "^1.7.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
@@ -26,7 +27,6 @@ mypy = "^0.782"
 ipython = "^7.17.0"
 devtools = "^0.6"
 pygments = "^2.6.1"
-
 
 [tool.poetry.scripts]
 sowba = 'sowba.cli:app'
