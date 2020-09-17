@@ -1,6 +1,15 @@
 ## Developments
 
-### Install RockDB dependencies
+### Install dependencies
+
+#### Poetry
+
+```shell
+sudo apt -y install python3-distutils python3-venv
+```
+
+#### RocksDB
+
 ```shell
 https://github.com/facebook/rocksdb/wiki/Building-on-Windows
 sudo apt install build-essential libsnappy-dev \
