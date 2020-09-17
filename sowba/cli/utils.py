@@ -22,6 +22,8 @@ from typing import Dict
 from pydantic import FilePath
 from pydantic.parse import load_file
 
+from sowba.core.model import SBaseModel
+
 
 def create_app(
     name, /, output="./", storage: StorageName = "rocksdb", template="default"
@@ -124,3 +126,7 @@ def load_settings(
     config: FilePath = pathlib.Path("./config.json"),
 ) -> AppSettings:
     return AppSettings(**load_raw_settings(config))
+
+
+def load_sevcurity(app: SApp):
+    return

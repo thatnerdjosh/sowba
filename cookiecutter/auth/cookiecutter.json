@@ -1,0 +1,6 @@
+{
+    "auth": "{{cookiecutter.auth}}",
+    "storage": "{{cookiecutter.storage}}",
+    "algorithm": "{{cookiecutter.algorithm}}",
+    "access_token_expire_minutes": "{{cookiecutter.access_token_expire_minutes}}"
+}

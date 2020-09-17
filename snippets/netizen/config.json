@@ -1,11 +1,19 @@
 {
-    "name": "compass",
+    "name": "netizen",
     "services": [
         {
             "name": "items",
             "status": "enable",
             "storage": {
-                "model": "compass.services.items.model.Items",
+                "model": "netizen.services.items.model.Items",
+                "connector": "rocksdb"
+            }
+        },
+        {
+            "name": "members",
+            "status": "enable",
+            "storage": {
+                "model": "netizen.services.members.model.Members",
                 "connector": "rocksdb"
             }
         }
@@ -55,7 +63,7 @@
     },
     "auth": {
         "storage": {
-            "model": "compass.services.auth.model.User",
+            "model": "netizen.services.auth.model.User",
             "connector": "rocksdb"
         },
         "algorithm": "HS256",

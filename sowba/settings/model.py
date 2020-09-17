@@ -64,22 +64,6 @@ class AdminUser(BaseSettings):
     )
 
 
-class Security(BaseSettings):
-    """
-    export SOWBA_ENV_SECURITY_SECRET_KEY="$(openssl rand -hex 32)"
-    """
-
-    secret_key: str = Field("ChangeMe", env="SOWBA_ENV_SECURITY_SECRET_KEY")
-    auth_path: str
-    algorithm: JwtAlgorithm
-    access_token_expire_minutes: int
-
-
-class Auth(BaseSettings):
-    admin: AdminUser
-    security: Security
-
-
 class Redis(BaseModel):
     dsn: RedisDsn
     settings: Dict = Field(default_factory=dict)
@@ -118,6 +102,17 @@ class Service(BaseModel):
     status: ServiceStatus = ServiceStatus.enable
     storage: ServiceStorage
     settings: Optional[Dict]
+
+
+class Auth(BaseSettings):
+    """
+    export SOWBA_ENV_SECURITY_SECRET_KEY="$(openssl rand -hex 32)"
+    """
+
+    algorithm: JwtAlgorithm
+    access_token_expire_minutes: int
+    storage: ServiceStorage
+    secret_key: str = Field("ChangeMe", env="SOWBA_ENV_SECURITY_SECRET_KEY")
 
 
 class AppSettings(BaseSettings):

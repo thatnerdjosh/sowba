@@ -1,5 +1,5 @@
 from sowba.core.model import SBaseModel
 
 
-class Member(SBaseModel):
-    ...
+class Items(SBaseModel):
+    name: str

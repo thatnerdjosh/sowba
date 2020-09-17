@@ -30,17 +30,6 @@
             }
         ]
     },
-    "auth": {
-        "admin": {
-            "username": "admin",
-            "email": "admin@sowba.com"
-        },
-        "security": {
-            "algorithm": "HS256",
-            "access_token_expire_minutes": 30,
-            "auth_path": "/token"
-        }
-    },
     "asgi": {
         "host": "0.0.0.0",
         "port": 8000,

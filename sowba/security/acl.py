@@ -16,6 +16,7 @@ class CreateItemAcl:
     __acl__ = [
         Acl(Allow, roles.user, "create"),
         Acl(Allow, roles.admin, "create"),
+        Acl(Allow, roles.root, "create"),
     ]
 
 

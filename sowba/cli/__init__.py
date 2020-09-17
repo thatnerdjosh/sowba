@@ -16,7 +16,7 @@ from pydantic import ValidationError
 from sowba.registry import get as get_registry
 from sowba.registry import add as add_registry
 from sowba.core import path
-from sowba.cli import config, service
+from sowba.cli import config, service, auth
 from sowba.settings.model import StorageName, ServiceStatus
 
 from sowba.cli.utils import (
@@ -27,6 +27,7 @@ from sowba.cli.utils import (
     make_app,
     run_app,
     load_service_endpoints,
+    load_sevcurity,
 )
 
 
@@ -35,14 +36,13 @@ sys.path.append(str(path.cwd()))
 app = typer.Typer()
 app.add_typer(config.app, name="config")
 app.add_typer(service.app, name="service")
+app.add_typer(auth.app, name="auth")
 
 
 @app.callback()
 def app_callback(
     ctx: typer.Context,
     config_file: Path = typer.Option("./config.json", "--config-file"),
-    admin_password: str = typer.Option(None, "--admin-passwd"),
-    secret_key: str = typer.Option(None, "--secret-key"),
 ):
     if ctx.invoked_subcommand == "create":
         typer.echo("Creating new project")
@@ -51,12 +51,6 @@ def app_callback(
     if not config_file.exists():
         typer.echo(f"Config file [{config_file}] not found.")
         raise typer.Abort()
-
-    if admin_password:
-        os.environ["SOWBA_ENV_ADMIN_USER_PASSWORD"] = admin_password
-
-    if secret_key:
-        os.environ["SOWBA_ENV_SECURITY_SECRET_KEY"] = secret_key
 
     try:
         add_registry.app_settings(load_settings(config_file))
@@ -100,6 +94,9 @@ def run(storage: StorageName = typer.Option(None, "--settings-storage")):
             settings.services[i].storage.connector = storage
 
     app = make_app(settings)
+    if getattr(settings, "auth", None):
+        load_sevcurity(app)
+
     for srv in settings.services:
         if srv.status == ServiceStatus.disable:
             continue

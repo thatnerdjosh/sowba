@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "compass"
+name = "netizen"
 version = "0.1.0"
 description = ""
 authors = ["Developer <developer@sowba.com>"]
@@ -9,11 +9,10 @@ license = "MIT"
 python = "^3.8"
 
 [tool.poetry.dev-dependencies]
-python-jose = {extras = ["cryptography"], version = "^3.2.0"}
 
 
 [tool.poetry.scripts]
-sowba = 'compass.cli:app'
+sowba = 'netizen.cli:app'
 
 [build-system]
 requires = ["poetry>=0.12"]

@@ -1,13 +1,13 @@
 from typing import List
 from datetime import datetime
 from contextvars import ContextVar
-from sowba.storage.utils import init_db, get_db
 from pydantic import BaseModel, Field, SecretStr, EmailStr
 from fastapi_permissions import Allow
+from sowba.security import roles
 
 
 class UserPrincipals(BaseModel):
-    principals: List[str] = ["role:user"]
+    principals: List[str] = [roles.user]
 
 
 class Updateprincipals(BaseModel):
@@ -56,9 +56,9 @@ class TokenData(BaseModel):
 
 
 class UserListAcl:
-    __acl__ = [(Allow, "role:admin", "view")]
+    __acl__ = [(Allow, roles.admin, "view")]
 
 
 class UserprincipalsAcl:
-    __acl__ = [(Allow, "role:admin", "update")]
+    __acl__ = [(Allow, roles.admin, "update")]
 
