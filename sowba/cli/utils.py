@@ -134,7 +134,7 @@ def load_sevcurity(app: SApp):
 def bootstrap_app(
     settings: AppSettings,
     storage: StorageName = None,
-) -> SApp:
+):
     app = make_app(settings)
     if getattr(settings, "auth", None):
         load_sevcurity(app)
@@ -161,4 +161,4 @@ def bootstrap_app(
             },
         )
     add_registry.app_settings(settings)
-    return app
+    add_registry.app(app)

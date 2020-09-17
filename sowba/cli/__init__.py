@@ -90,7 +90,8 @@ def run(storage: StorageName = typer.Option(None, "--settings-storage")):
     typer.echo(f"app: {settings.name}")
     typer.echo(f"storage: {storage}")
 
-    app = bootstrap_app(settings, storage)
+    bootstrap_app(settings, None, storage)
+    app = get_registry.app()
     devtools.debug(settings.asgi)
     run_app(app, settings)
 
