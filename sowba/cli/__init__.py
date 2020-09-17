@@ -20,6 +20,7 @@ from sowba.cli import config, service, auth
 from sowba.settings.model import StorageName, ServiceStatus
 
 from sowba.cli.utils import (
+    bootstrap_app,
     create_app,
     load_settings,
     make_service_storage,
@@ -89,33 +90,7 @@ def run(storage: StorageName = typer.Option(None, "--settings-storage")):
     typer.echo(f"app: {settings.name}")
     typer.echo(f"storage: {storage}")
 
-    if storage is not None:
-        for i, _ in enumerate(settings.services):
-            settings.services[i].storage.connector = storage
-
-    app = make_app(settings)
-    if getattr(settings, "auth", None):
-        load_sevcurity(app)
-
-    for srv in settings.services:
-        if srv.status == ServiceStatus.disable:
-            continue
-        storage = make_service_storage(srv.name, settings)
-        add_registry.storage(srv.name, storage)
-        router = make_service(srv.name, storage, settings)
-        add_registry.service(srv.name, router)
-        load_service_endpoints(srv.name, settings)
-        app.include_router(
-            router,
-            tags=[f"{settings.name}@{srv.name}"],
-            prefix=f"/{settings.name}/{srv.name}",
-            responses={
-                404: {
-                    "service": f"{settings.name}/{srv.name}",
-                    "error": "NOT_FOUND",
-                }
-            },
-        )
+    app = bootstrap_app(settings, storage)
     devtools.debug(settings.asgi)
     run_app(app, settings)
 

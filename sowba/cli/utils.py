@@ -22,6 +22,7 @@ from typing import Dict
 from pydantic import FilePath
 from pydantic.parse import load_file
 
+from sowba.registry import add as add_registry
 from sowba.core.model import SBaseModel
 
 
@@ -51,7 +52,6 @@ def create_service(app, service):
     except OutputDirExistsException:
         typer.echo(f"Eroor: Service {service} alredy exist!")
         raise typer.Abort()
-
 
 def make_app(settings: AppSettings) -> SApp:
     app = SApp(settings=settings)
@@ -130,3 +130,35 @@ def load_settings(
 
 def load_sevcurity(app: SApp):
     return
+
+def bootstrap_app(
+    settings: AppSettings,
+    storage: StorageName = None,
+) -> SApp:
+    app = make_app(settings)
+    if getattr(settings, "auth", None):
+        load_sevcurity(app)
+
+    for i, srv in enumerate(settings.services):
+        if srv.status == ServiceStatus.disable:
+            continue
+        if storage is not None:
+            settings.services[i].storage.connector = storage
+        storage = make_service_storage(srv.name, settings)
+        add_registry.storage(srv.name, storage)
+        router = make_service(srv.name, storage, settings)
+        add_registry.service(srv.name, router)
+        load_service_endpoints(srv.name, settings)
+        app.include_router(
+            router,
+            tags=[f"{settings.name}@{srv.name}"],
+            prefix=f"/{settings.name}/{srv.name}",
+            responses={
+                404: {
+                    "service": f"{settings.name}/{srv.name}",
+                    "error": "NOT_FOUND",
+                }
+            },
+        )
+    add_registry.app_settings(settings)
+    return app
