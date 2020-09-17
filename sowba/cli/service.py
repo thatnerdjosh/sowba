@@ -13,6 +13,7 @@ import typer
 from typing import List
 from pydantic import PyObject, PyObjectError
 from sowba.cli.utils import (
+    bootstrap_app,
     load_raw_settings,
     create_service,
     update_service_status,
@@ -106,31 +107,8 @@ def run(
         filter(lambda x: x[1].name in names, enumerate(settings.services))
     )
 
-    if storage is not None:
-        for i, _ in enumerate(services):
-            settings.services[i].storage.connector = storage
-    add_registry.app_settings(settings)
-
-    app = make_app(settings)
-    for srv in map(lambda x: x[1], services):
-        if srv.status == ServiceStatus.disable:
-            continue
-        storage = make_service_storage(srv.name, settings)
-        add_registry.storage(srv.name, storage)
-        router = make_service(srv.name, storage, settings)
-        add_registry.service(srv.name, router)
-        load_service_endpoints(srv.name, settings)
-        app.include_router(
-            router,
-            tags=[f"{settings.name}@{srv.name}"],
-            prefix=f"/{settings.name}/{srv.name}",
-            responses={
-                404: {
-                    "service": f"{settings.name}/{srv.name}",
-                    "error": "NOT_FOUND",
-                }
-            },
-        )
+    bootstrap_app(settings, services, storage)
+    app = get_registry.app()
     devtools.debug(settings.asgi)
     run_app(app, settings)
 

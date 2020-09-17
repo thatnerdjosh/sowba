@@ -18,7 +18,7 @@ from cookiecutter.exceptions import OutputDirExistsException
 
 
 import pathlib
-from typing import Dict
+from typing import Dict, List
 from pydantic import FilePath
 from pydantic.parse import load_file
 
@@ -133,13 +133,15 @@ def load_sevcurity(app: SApp):
 
 def bootstrap_app(
     settings: AppSettings,
+    service_filter: List[str] = None,
     storage: StorageName = None,
 ):
     app = make_app(settings)
     if getattr(settings, "auth", None):
         load_sevcurity(app)
 
-    for i, srv in enumerate(settings.services):
+    services = service_filter if service_filter is not None else enumerate(settings.services)
+    for i, srv in services:
         if srv.status == ServiceStatus.disable:
             continue
         if storage is not None:
