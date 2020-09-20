@@ -1,12 +1,20 @@
-## Developments
+# Development Documentation
 
-### Install RockDB dependencies
-```shell
+## Install RockDB dependencies
+### Windows
+
 https://github.com/facebook/rocksdb/wiki/Building-on-Windows
+
+### Ubuntu
+
+```shell
 sudo apt install build-essential libsnappy-dev \
                 zlib1g-dev libbz2-dev libgflags-dev \
                 librocksdb-dev liblz4-1 liblz4-dev
 ```
+
+### macOS
+https://github.com/facebook/rocksdb/issues/5151
 
 ### Clone repo
 ```shell
