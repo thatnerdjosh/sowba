@@ -96,11 +96,19 @@ class ServiceStorage(BaseModel):
     model: Union[PyObject, Dict]
     connector: Optional[StorageName] = StorageName.rocksdb
 
+class Route(BaseModel):
+    endpoint: str
+    method: str
+    router_method: str
+
+class Autoload(BaseModel):
+    routes: List[Route]
 
 class Service(BaseModel):
     name: str
     status: ServiceStatus = ServiceStatus.enable
     storage: ServiceStorage
+    autoload: Optional[Autoload]
     settings: Optional[Dict]
 
 

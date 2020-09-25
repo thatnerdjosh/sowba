@@ -92,7 +92,7 @@ def make_service_storage(service: str, settings: AppSettings) -> BaseStorage:
 
 def make_service(name: str, storage: BaseStorage, settings: AppSettings):
     router = SServiceRouter(storage=storage)
-    router.storage.model = api(router, storage, name=name)(
+    router.storage.model = api(router, storage, settings, name=name)(
         router.storage.model
     )
     return router

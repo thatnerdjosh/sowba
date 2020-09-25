@@ -1,6 +1,7 @@
 from typing import List
 from pydantic import BaseModel
 from sowba.core import SServiceRouter
+from sowba.settings.model import AppSettings
 from sowba.storage import BaseStorage
 
 
@@ -52,24 +53,37 @@ class SServiceCrud:
 
 class api:
     def __init__(
-        self, router: SServiceRouter, storage: BaseStorage, name=None
+        self, router: SServiceRouter, storage: BaseStorage, settings: AppSettings, name=None
     ):
         self.router = router
         self.storage = storage
         self.name = name
+        self.settings = settings
 
     def __call__(self, cls):
         crud = SServiceCrud(cls, storage=self.storage)
 
-        crud.get = self.router.get("/{oid}")(crud.get)
-        crud.get_many = self.router.get("/")(crud.get_many)
-        crud.create = self.router.post("/")(crud.create)
-        crud.patch = self.router.patch("/{oid}")(crud.patch)
-        crud.patch_many = self.router.patch("/")(crud.patch_many)
-        crud.put = self.router.put("/{oid}")(crud.put)
-        crud.put_many = self.router.put("/")(crud.put_many)
-        crud.delete = self.router.delete("/{oid}")(crud.delete)
-        crud.delete_many = self.router.delete("/")(crud.delete_many)
+        srv = None
+        for srv in self.settings.services:
+            if srv.name == self.name:
+                break
+            else:
+                raise Exception(f"Service: {self.name} lookup error")
+        autoload = getattr(srv, "autoload", None)
+        if autoload != None:
+            for route in autoload.routes:
+                router_method = getattr(self.router, str.lower(route.router_method))
+                crud_method = getattr(crud, route.method)
+                setattr(crud, route.method, router_method(route.endpoint)(crud_method))
+
+            # crud.get_many = self.router.get("/")(crud.get_many)
+            # crud.create = self.router.post("/")(crud.create)
+            # crud.patch = self.router.patch("/{oid}")(crud.patch)
+            # crud.patch_many = self.router.patch("/")(crud.patch_many)
+            # crud.put = self.router.put("/{oid}")(crud.put)
+            # crud.put_many = self.router.put("/")(crud.put_many)
+            # crud.delete = self.router.delete("/{oid}")(crud.delete)
+            # crud.delete_many = self.router.delete("/")(crud.delete_many)
 
         def inner(*args, **kwargs):
             return cls(*args, **kwargs)
