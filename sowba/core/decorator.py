@@ -1,11 +1,21 @@
 from typing import List
-from pydantic import BaseModel
+from pydantic import BaseModel, parse_obj_as
 from sowba.core import SServiceRouter
-from sowba.settings.model import AppSettings
+from sowba.settings.model import AppSettings, Route
 from sowba.storage import BaseStorage
 
 
 class SServiceCrud:
+    class Meta:
+        def __init__(self):
+            self._routes = [
+                {
+                    "router_method": "post",
+                    "method": "create",
+                    "endpoint": "/"
+                }
+            ]
+
     def __init__(self, model: BaseModel, storage: BaseStorage):
         self.model = model
         self.storage = storage
@@ -61,20 +71,13 @@ class api:
         self.settings = settings
 
     def __call__(self, cls):
+        # TODO: Add configuration object to import custom ServiceCrud object
         crud = SServiceCrud(cls, storage=self.storage)
-
-        srv = None
-        for srv in self.settings.services:
-            if srv.name == self.name:
-                break
-            else:
-                raise Exception(f"Service: {self.name} lookup error")
-        autoload = getattr(srv, "autoload", None)
-        if autoload != None:
-            for route in autoload.routes:
-                router_method = getattr(self.router, str.lower(route.router_method))
-                crud_method = getattr(crud, route.method)
-                setattr(crud, route.method, router_method(route.endpoint)(crud_method))
+        autoload = parse_obj_as(List[Route], crud.Meta()._routes)
+        for route in autoload:
+            router_method = getattr(self.router, str.lower(route.router_method))
+            crud_method = getattr(crud, route.method)
+            setattr(crud, route.method, router_method(route.endpoint)(crud_method))
 
             # crud.get_many = self.router.get("/")(crud.get_many)
             # crud.create = self.router.post("/")(crud.create)

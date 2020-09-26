@@ -6,13 +6,6 @@
         "storage": {
             "model": "{{cookiecutter.app}}.services.items.model.Items",
             "connector": "{{cookiecutter.storage}}"
-        },
-        "autoload": {
-            "routes": {
-                "/": {
-                   "POST": "create"
-                }
-            }
         }
     }],
     "storages": {

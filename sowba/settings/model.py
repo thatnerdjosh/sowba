@@ -108,7 +108,6 @@ class Service(BaseModel):
     name: str
     status: ServiceStatus = ServiceStatus.enable
     storage: ServiceStorage
-    autoload: Optional[Autoload]
     settings: Optional[Dict]
 
 
