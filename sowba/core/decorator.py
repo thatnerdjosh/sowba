@@ -5,26 +5,31 @@ from sowba.storage import BaseStorage
 
 
 class SServiceCrud:
-    def __init__(self, model: BaseModel, storage: BaseStorage):
-        self.model = model
+    def __init__(self, storage: BaseStorage):
+        self.model = storage.model
         self.storage = storage
 
         async def get(oid: str):
-            return {"endpoint": f"[GET] /{oid}"}
+            return self.storage.get(oid)
 
         async def get_many():
             return {"endpoint": "[GET] /"}
 
         async def create(obj: self.model):
-            return {"endpoint": "[POST] /@create"}
+            return self.storage.store(obj)
 
-        async def create_many(obj: self.model):
-            return {"endpoint": "[POST] /@create/"}
+        async def create_many(objs: List[self.model]):
+            output = []
+            for obj in objs:
+                output.append(self.storage.store(obj))
+
+            return {"results": output}
 
         async def put(oid: str, obj: self.model):
-            return {"endpoint": "[PUT] /@put/{oid}"}
+            self.storage.update(oid=oid, obj=obj)
 
         async def put_many(objs: List[self.model]):
+            # TODO: Need ID stored on the model
             return {"endpoint": "[PUT] /@put/"}
 
         async def patch(oid: str, obj: self.model):
@@ -59,7 +64,7 @@ class api:
         self.name = name
 
     def __call__(self, cls):
-        crud = SServiceCrud(cls, storage=self.storage)
+        crud = SServiceCrud(storage=self.storage)
 
         crud.get = self.router.get("/{oid}")(crud.get)
         crud.get_many = self.router.get("/")(crud.get_many)

@@ -67,7 +67,24 @@ class UpdateData(rocksdb.interfaces.AssociativeMergeOperator):
             existing_value = json.loads(existing_value)
             value = json.loads(value)
             for attr, val in value.items():
-                if isinstance(value[attr], list):
+                if isinstance(val, list):
+                    if len(val) > 0 and isinstance(val[0], dict):
+                        # TODO: Ask how to use the debugger in here
+                        # Turn the list into something easier to merge by a
+                        # pkey
+                        input_map = { item["uid"]: item for item in val }
+                        existing_map = { item["uid"]: item for item in
+                                existing_value[attr] }
+
+                        # Merge the input into the existing data
+                        merged_map = { **existing_map, **input_map }
+
+                        # Convert back to a list
+                        existing_value[attr] = [ value for value in
+                                merged_map.values() ]
+
+                        continue
+
                     existing_value[attr] = list(
                         set(existing_value[attr] + val)
                     )
@@ -128,7 +145,7 @@ class RocksDBStorage(BaseStorage):
             setattr(self.opts, opt, value)
         self._setuped = True
 
-    def configure(self, model: BaseModel, /, **kwargs):
+    def configure(self, model: BaseModel, **kwargs):
         kwargs.setdefault("deserialize", deserialize)
         kwargs.setdefault("serialize", serialize)
         kwargs.setdefault("validator", validator)

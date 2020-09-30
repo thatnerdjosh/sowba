@@ -87,12 +87,13 @@ def make_service_storage(service: str, settings: AppSettings) -> BaseStorage:
         **getattr(storage_settings, "configuration", ConnectorConfig()).dict(),
     )
     storage.settings(**getattr(storage_settings, "settings", dict()))
+    storage.setup()
     return storage
 
 
 def make_service(name: str, storage: BaseStorage, settings: AppSettings):
     router = SServiceRouter(storage=storage)
-    router.storage.model = api(router, storage, name=name)(
+    api(router, storage, name=name)(
         router.storage.model
     )
     return router
